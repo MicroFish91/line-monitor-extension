@@ -1,11 +1,13 @@
 import * as vscode from "vscode";
 
-export function initEventListeners(charLimit: number) {
-  onExceedCharLimit(charLimit);
+export function initEventListeners(lengthLimit: number, exceedColor: string) {
+  onExceedCharLimit(lengthLimit, exceedColor);
 }
 
-function onExceedCharLimit(charLimit: number) {
-  const setTextYellow = vscode.window.createTextEditorDecorationType({ color: "#FFFF00" });
+function onExceedCharLimit(lengthLimit: number, exceedColor: string) {
+  const setExceedColor = vscode.window.createTextEditorDecorationType({ color: exceedColor });
+  const exceedingLines: Record<number, vscode.Range> = {};
+  const wasGreater: Set<number> = new Set();
 
   vscode.workspace.onDidChangeTextDocument(
     (e: vscode.TextDocumentChangeEvent) => {
@@ -19,16 +21,21 @@ function onExceedCharLimit(charLimit: number) {
       const lastCharPos = new vscode.Position(lineCount, charCount);
       const lineText = editor.document.lineAt(lastCharPos).text;
 
-      editor.setDecorations(setTextYellow, []);
+      if(lineText.length > lengthLimit) {
+        exceedingLines[lineCount] = new vscode.Range(
+          new vscode.Position(lineCount, lengthLimit),
+          new vscode.Position(lineCount, lineText.length)
+        );
 
-      if(lineText.length > charLimit) {
-        editor.setDecorations(setTextYellow, [
-          new vscode.Range(
-            new vscode.Position(lineCount, charLimit),
-            new vscode.Position(lineCount, lineText.length)
-          )
-        ]);
+        wasGreater.add(lineCount);
       }
+
+      if(wasGreater.has(lineCount) && lineText.length <= lengthLimit) {
+        delete exceedingLines[lineCount];
+        wasGreater.delete(lineCount);
+      }
+
+      editor.setDecorations(setExceedColor, Object.values(exceedingLines));
     }
   );
 }

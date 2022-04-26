@@ -4,9 +4,9 @@ import { initEventListeners } from "./events";
 import { initHovers } from "./hovers";
 
 export async function activate(_context: vscode.ExtensionContext) {
-  const charLimit: number = await getConfigs();
+  const { lengthLimit, exceedColor } = await getConfigs();
   initHovers();
-  initEventListeners(charLimit);
+  initEventListeners(lengthLimit, exceedColor);
 }
 
 export function deactivate() {}
