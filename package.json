@@ -6,6 +6,7 @@
 	"engines": {
 		"vscode": "^1.66.0"
 	},
+	"repository": "https://github.com/MicroFish91/line-monitor-extension",
 	"categories": [
 		"Other"
 	],
