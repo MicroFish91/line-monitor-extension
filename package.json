@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:line-monitor.helloWorld"
+    "onLanguage:javascript",
+		"onLanguage:typescript"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {

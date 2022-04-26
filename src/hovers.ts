@@ -5,7 +5,7 @@ export function initHovers() {
 }
 
 function addCharCountHover() {
-  vscode.languages.registerHoverProvider("typescript", {
+  vscode.languages.registerHoverProvider(["javascript", "typescript"], {
     provideHover(doc: vscode.TextDocument, pos: vscode.Position) {
       const lineText = doc.lineAt(pos.line).text;
 
